@@ -1,6 +1,5 @@
 import "reflect-metadata";
-// import { createConnection } from "typeorm";
-// import { User } from "./entity/User";
+import "dotenv/config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -19,11 +18,14 @@ const main = async () => {
 
   app.use(cookieParser());
 
-  app.get("/", (_, res) => res.end("test"));
+  app.get("/", (_, res) => res.end("Testing endpoint"));
+
   app.get("/refresh-token", async (req, res) => {
     const refreshToken = req.cookies["jid"];
+    const errorResponse = { ok: false, accessToken: "" };
+
     if (!refreshToken) {
-      return res.json({ ok: false, accessToken: "" });
+      return res.json(errorResponse);
     }
 
     let payload: any = null;
@@ -31,12 +33,16 @@ const main = async () => {
       payload = verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!);
     } catch (err) {
       console.error(err.message);
-      return res.json({ ok: false, accessToken: "" });
+      return res.json(errorResponse);
     }
 
     const user = await User.findOne(payload.userId);
     if (!user) {
-      return res.json({ ok: false, accessToken: "" });
+      return res.json(errorResponse);
+    }
+
+    if (payload.tokenVersion !== user.tokenVersion) {
+      return res.json(errorResponse);
     }
 
     sendRefreshToken(res, createRefreshToken(user));

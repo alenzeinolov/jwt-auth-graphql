@@ -14,6 +14,7 @@ import { MyContext } from "./MyContext";
 import { createAccessToken, createRefreshToken } from "./auth";
 import isAuth from "./isAuth";
 import sendRefreshToken from "./sendRefreshToken";
+import { getConnection } from "typeorm";
 
 @ObjectType()
 class LoginResponse {
@@ -78,6 +79,17 @@ export class UserResolver {
       console.error(err.message);
       return false;
     }
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async revokeRefreshTokensForUser(
+    @Arg("userId") userId: number
+  ): Promise<Boolean> {
+    await getConnection()
+      .getRepository(User)
+      .increment({ id: userId }, "tokenVersion", 1);
 
     return true;
   }

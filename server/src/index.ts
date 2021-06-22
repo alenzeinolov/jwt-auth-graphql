@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./UserResolver";
@@ -17,6 +18,12 @@ const main = async () => {
   const app = express();
 
   app.use(cookieParser());
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
 
   app.get("/", (_, res) => res.end("Testing endpoint"));
 
@@ -56,7 +63,7 @@ const main = async () => {
     context: ({ req, res }) => ({ req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(5000, () => {
     console.log("Listening at http://localhost:5000");

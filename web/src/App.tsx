@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Me from "./pages/Me";
 import Register from "./pages/Register";
 
 const App: React.FC = () => {
@@ -13,6 +14,9 @@ const App: React.FC = () => {
             <Link to="/">Home</Link>
           </div>
           <div>
+            <Link to="/me">Me</Link>
+          </div>
+          <div>
             <Link to="/login">Login</Link>
           </div>
           <div>
@@ -21,6 +25,7 @@ const App: React.FC = () => {
         </header>
         <Switch>
           <Route path="/" component={Home} exact />
+          <Route path="/me" component={Me} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
         </Switch>

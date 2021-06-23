@@ -27,7 +27,7 @@ const main = async () => {
 
   app.get("/", (_, res) => res.end("Testing endpoint"));
 
-  app.get("/refresh-token", async (req, res) => {
+  app.post("/refresh-token", async (req, res) => {
     const refreshToken = req.cookies["jid"];
     const errorResponse = { ok: false, accessToken: "" };
 

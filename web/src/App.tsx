@@ -1,37 +1,29 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Me from "./pages/Me";
-import Register from "./pages/Register";
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { setAccessToken } from "./accessToken";
+import Routes from "./Routes";
 
 const App: React.FC = () => {
-  return (
-    <Router>
-      <div>
-        <header>
-          <div>
-            <Link to="/">Home</Link>
-          </div>
-          <div>
-            <Link to="/me">Me</Link>
-          </div>
-          <div>
-            <Link to="/login">Login</Link>
-          </div>
-          <div>
-            <Link to="/register">Register</Link>
-          </div>
-        </header>
-        <Switch>
-          <Route path="/" component={Home} exact />
-          <Route path="/me" component={Me} />
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-        </Switch>
-      </div>
-    </Router>
-  );
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const refreshToken = async () => {
+      const res = await fetch("http://localhost:5000/refresh-token", {
+        method: "post",
+        credentials: "include",
+      });
+      const { accessToken } = await res.json();
+      setAccessToken(accessToken);
+      setLoading(false);
+    };
+    refreshToken();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return <Routes />;
 };
 
 export default App;

@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Header from "./Header";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Me from "./pages/Me";
@@ -9,20 +10,7 @@ const Routes: React.FC = () => {
   return (
     <Router>
       <div>
-        <header>
-          <div>
-            <Link to="/">Home</Link>
-          </div>
-          <div>
-            <Link to="/me">Me</Link>
-          </div>
-          <div>
-            <Link to="/login">Login</Link>
-          </div>
-          <div>
-            <Link to="/register">Register</Link>
-          </div>
-        </header>
+        <Header />
         <Switch>
           <Route path="/" component={Home} exact />
           <Route path="/me" component={Me} />
